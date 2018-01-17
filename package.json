@@ -1,0 +1,26 @@
+{
+  "name": "anywhere",
+  "version": "1.0.0",
+  "description": "node静态资源服务器",
+  "main": "index.js",
+  "dependencies": {
+    "babel-eslint": "^8.2.1",
+    "eslint": "^4.15.0"
+  },
+  "devDependencies": {
+    "chalk": "^2.3.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhalice2011/anywhere.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zhalice2011/anywhere/issues"
+  },
+  "homepage": "https://github.com/zhalice2011/anywhere#readme"
+}

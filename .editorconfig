@@ -1,0 +1,18 @@
+# 不要再往上找  这个是顶层了
+root = true
+
+# 所有的文件都匹配
+[*]
+# 使用utf8编码
+charset = utf-8
+# 用space缩进 不是用tab缩进
+indent_style = space
+# 2个空格
+indent_size = 2
+# 使用unix风格的回车
+end_of_line = lf
+# 文件最后一行有一个回车
+insert_final_newline = true
+
+[*.json]
+indent_size = 4
