@@ -4,11 +4,10 @@ const {createGzip, createDeflate} = require('zlib')
 
 module.exports = (rs, req, res) => {
   //1.获取浏览器支持的几种压缩方式
-  const acceptEncoding = req.headers['accept-encoding']
+  const acceptEncoding = req.headers['accept-encoding'] || ''
   console.log("acceptEncoding",acceptEncoding)
-  const Encodingarr = acceptEncoding.split(',')
+  
   console.log(acceptEncoding.match(/\b(gzip|deflate)\b/))
-  //acceptEncoding.match(/\b(gzip|deflate)\b/)
   if (!acceptEncoding || !acceptEncoding.match(/\b(gzip|deflate)\b/)) { //如果浏览器不支持或者不是我的服务器只支持的这两种(gzip|deflate)
     console.log("如果浏览器不支持")
     return rs //原样返回 不进行处理

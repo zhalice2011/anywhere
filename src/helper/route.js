@@ -8,7 +8,9 @@ const readdir = promisify(fs.readdir)  // 改造异步函数
 const path = require('path')
 const config = require('../config/defaultConfig')
 const mime = require('./mime')
-const compress = require('./compress')
+const compress = require('./compress') // 引入压缩文件的函数
+const range = require('./range') // 引入返回字节范围的函数
+
 
 const tplPath = path.join(__dirname, '../template/dir.tpl')
 // readFileSync是同步的方法  因为下面要用到这个source  
@@ -23,21 +25,28 @@ module.exports = async function(req, res, filepath) {
     if (stats.isFile()) { // 如果是文件
       const contentType = mime(filepath)
       console.log("文件的contentType",contentType)
-      res.statusCode = 200;
       res.setHeader('Content-Type', contentType)  // 设置通过文本的形式返回内容
       //1.第一种返回给客户端的方法(一般不采用).因为是要全部读取才会返回
       // fs.readFile(filepath, (err, data) => {
       //   res.end(data.toString())
       // })
       //2.第二种读取文件的方法(采用流的形式,读取一点返回一点 )
-      fs.createReadStream(filepath).pipe(res); //把这个文件读出来 通过流的形式返回给客户端
-      
-      // let rs = fs.createReadStream(filepath); //把这个文件读出来 通过流的形式返回给客户端      
-      // // 符合条件的进行压缩
-      // if (filepath.match(config.compress)) { //config.compress是配置的需要压缩的文件类型
-      //   rs = compress(rs, req, res) // 然后进行压缩
-      // }
-      // rs.pipe(res)
+      //fs.createReadStream(filepath).pipe(res); //把这个文件读出来 通过流的形式返回给客户端
+      let rs;
+      const {code, start, end} = range(stats.size, req, res) //stats.size文件的大小
+      if (code === 200) { // 没有rang或者range的范围是处理不了
+        res.statusCode = 200;        
+        rs = fs.createReadStream(filepath); //把这个文件读出来 通过流的形式返回给客户端      
+      } else { // 如果可以进行处理的话
+        res.statusCode = 206;
+
+        rs = fs.createReadStream(filepath, {start:start,end:end}) //加了option就可以读取文件的部分内容了
+      }
+      // 符合条件的进行压缩
+      if (filepath.match(config.compress)) { //config.compress是配置的需要压缩的文件类型
+        rs = compress(rs, req, res) // 然后进行压缩
+      }
+      rs.pipe(res)
 
     } else if (stats.isDirectory()) { // 如果是一个文件夹
       //获取该文件夹的列表
