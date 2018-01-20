@@ -6,7 +6,7 @@ const promisify = require('util').promisify
 const stat = promisify(fs.stat)  // 改造异步函数
 const readdir = promisify(fs.readdir)  // 改造异步函数
 const path = require('path')
-const config = require('../config/defaultConfig')
+// const config = require('../config/defaultConfig')
 const mime = require('./mime')
 const compress = require('./compress') // 引入压缩文件的函数
 const range = require('./range') // 引入返回字节范围的函数
@@ -18,7 +18,7 @@ const source = fs.readFileSync(tplPath)  // 读取出来的source是一个BUFFER
 // 生成tpl  Handlebars.compile接受的是一个字符串
 const template = Handlebars.compile(source.toString())
 
-module.exports = async function(req, res, filepath) {
+module.exports = async function(req, res, filepath, config) {
   try {
     // stat方法的参数是一个文件或目录，它产生一个对象，该对象包含了该文件或目录的具体信息。我们往往通过该方法，判断正在处理的到底是一个文件，还是一个目录。
     const stats = await stat(filepath)
